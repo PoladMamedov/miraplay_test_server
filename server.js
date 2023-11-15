@@ -30,7 +30,7 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
   const user = await findUser(req.body.email);
   if (user === null) {
-    return res.send({ error: "There is no user with this email" });
+    return res.status(401).send({ error: "There is no user with this email" });
   }
   try {
     if (await bcrypt.compare(req.body.password, user.password)) {
@@ -40,7 +40,7 @@ app.post("/login", async (req, res) => {
         token: user.token,
       });
     } else {
-      res.send({ error: "Wrong password" });
+      res.status(401).send({ error: "Wrong password" });
     }
   } catch {
     res.status(500).send();
