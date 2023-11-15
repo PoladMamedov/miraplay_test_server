@@ -1,18 +1,20 @@
+import 'dotenv/config'
 import express from "express";
 import cors from "cors";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
+import { registerUser, findUser } from "./db/index.js";
+
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-import { registerUser, findUser } from "./db/index.js";
-
-const users = [];
-
 app.post("/register", async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const user = { email: req.body.email, name: req.body.name, password: hashedPassword };
+    const token = jwt.sign(req.body, process.env.JWT_SECRET);
+    const user = { email: req.body.email, name: req.body.name, password: hashedPassword, token: token };
     const addedUser = await registerUser(user);
     if (addedUser.error) {
       res.status(401).send(addedUser);
@@ -32,7 +34,11 @@ app.post("/login", async (req, res) => {
   }
   try {
     if (await bcrypt.compare(req.body.password, user.password)) {
-      res.send(user);
+      res.send({
+        email: user.email,
+        name: user.name,
+        token: user.token,
+      });
     } else {
       res.send({ error: "Wrong password" });
     }

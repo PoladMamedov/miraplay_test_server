@@ -1,10 +1,7 @@
-// DsCwD71Cbk27dJPK
-
+import 'dotenv/config'
 import { MongoClient, ServerApiVersion } from "mongodb";
 
-const uri = "mongodb+srv://poladikksp:DsCwD71Cbk27dJPK@miraplay-cluster.wqjew3j.mongodb.net/";
-
-const client = new MongoClient(uri, {
+const client = new MongoClient(process.env.MONGODB_URI, {
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
