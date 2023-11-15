@@ -7,8 +7,8 @@ import jwt from "jsonwebtoken";
 import { registerUser, findUser } from "./db/index.js";
 
 const app = express();
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
 
 app.post("/register", async (req, res) => {
   try {
